@@ -1,13 +1,29 @@
 # pylogin
-A python utility similar to RANCID's clogin.
+A Python utility similar to RANCID's clogin.
 
 I recently ran into an issue where I needed to push changes to a lot of devices that didn't have a prompt any 
-existing utility would recognize.  After finding the paramiko-expect library by fgimian, I decided to make a utility similar
-to clogin, but that would easily allow the user to specify different prompts to match.  It does require a pythyon version
-of at least 2.7.
+existing utility would recognize.  After finding the [paramiko-expect](https://github.com/fgimian/paramiko-expect) library by fgimian, I decided to make a utility similar to clogin, but that would easily allow the user to specify different prompts to match.  It does require a python version of at least 2.7 due to the argparse requirement.
 
+### Install 
+You will first need to verify that you have python version 2.7 installed. RHEL 6 for example still uses Python 2.6 and needs to remain that way.  If you don't have version 2.7 you will need to do a local install.
+```
+[skoog@bounty pylogin]$ python -V
+Python 2.6.6
+[skoog@bounty pylogin]$ python2.7 -V
+Python 2.7.10
+[skoog@bounty pylogin]$ which python
+/usr/bin/python
+[skoog@bounty pylogin]$ which python2.7
+/usr/local/bin/python2.7
+```
+Next you need to install the libary dependency for the install of python being used and dowload the script.
+```
+python2.7 -m pip install git+https://github.com/fgimian/paramiko-expect.git
+wget https://github.com/rskoog/pylogin/blob/master/pylogin.py
+./pylogin.py --help
+```
 
-Usage:
+### Usage
 ```
 [skoog@bounty pylogin]$ ./pylogin.py --help
 usage: pylogin.py [-h] [-c COMMAND] [-p PASSWORD] [-prompt PROMPT]
@@ -48,7 +64,7 @@ optional arguments:
                         overrides -c
 ```
 
-Example Usage with a Sentry Commander PDU device:
+#### Example Usage with a Sentry Commander PDU device:
 
 ```
 [skoog@bounty pylogin]$ ./pylogin.py -c 'show syslog' -prompt 'Switched CDU: ' 
@@ -74,7 +90,7 @@ Switched CDU: exit
 Session ended
 ```
 
-Or you can just use it with a cisco router.
+#### Cisco Router.
 ```
 [skoog@bounty pylogin]$ ./pylogin.py -c 'enable;show version' rtr
 Password:
