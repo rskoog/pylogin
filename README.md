@@ -8,6 +8,7 @@ of at least 2.7.
 
 
 Usage:
+```
 [skoog@bounty pylogin]$ ./pylogin.py --help
 usage: pylogin.py [-h] [-c COMMAND] [-p PASSWORD] [-prompt PROMPT]
                   [-pagerprompt PAGERPROMPT]
@@ -45,11 +46,11 @@ optional arguments:
   -x COMMANDFILE        Specifies a file with commands to run on each device.
                         Theymust not expect additional input. This option
                         overrides -c
-[skoog@bounty pylogin]$
-
+```
 
 Example Usage with a Sentry Commander PDU device:
 
+```
 [skoog@bounty pylogin]$ ./pylogin.py -c 'show syslog' -prompt 'Switched CDU: ' 
 Password:
 
@@ -71,11 +72,10 @@ Switched CDU: show syslog
 Switched CDU: exit
 
 Session ended
-
-[skoog@bounty pylogin]$
+```
 
 Or you can just use it with a cisco router.
-
+```
 [skoog@bounty pylogin]$ ./pylogin.py -c 'enable;show version' rtr
 Password:
 
@@ -127,4 +127,4 @@ Configuration register is 0x2102
 
 rtr#
 rtr#exit
-[skoog@bounty pylogin]$
+```
