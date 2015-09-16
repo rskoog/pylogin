@@ -47,19 +47,30 @@ def main():
                         " a file with commands to run on each device. They" 
                         "must not expect additional input.  This option " 
                         "overrides -c")
-    parser.add_argument("router", metavar="router", type=str, nargs="+", 
-                        help="One or my routers to connect to.") 
+    parser.add_argument("-r", dest="routerFile", type=str, help="Specifies a"
+                        " file with a list of routers to apply the commands "
+                        "against.  This option overrides the router argument.")
+    parser.add_argument("router", metavar="router", type=str, 
+                        nargs=argparse.REMAINDER, help="One or my routers to "
+                        "connect to.") 
     args = parser.parse_args()
     # Prompt for pass if one wasn't given.
     if not args.password:
         password = getpass.getpass()
     else:
         password = args.password
-    # Check to see if we were given an enable pass.
+    # Check to see if we were given an enable pass and if so set the enable
+    # password, if none specified default to same as password.
     if args.enablepass:
         enablePassword = args.enablepass
     else:
         enablePassword = password
+    if args.routerFile:
+        routerFileObj = open(args.routerFile)
+        routerList = routerFileObj.read().splitlines()
+        routerFileObj.close()
+    else:
+        routerList = args.router
     # Counter to determine which router we are working with.
     routerId = 0
 
@@ -78,7 +89,7 @@ def main():
         else:
             # Commands specified with -c option separated by ';'
             commandsToRun = args.command.split(";")
-        while routerId < len(args.router): 
+        while routerId < len(routerList): 
 
             # Create a new SSH client object
             client = paramiko.SSHClient()
@@ -88,7 +99,7 @@ def main():
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
             # Connect to the host.
-            client.connect(hostname=args.router[routerId], 
+            client.connect(hostname=routerList[routerId], 
                            username=args.username, password=password)
 
             # Create a client interaction class which will interact with 
