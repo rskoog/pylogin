@@ -65,6 +65,8 @@ def main():
         enablePassword = args.enablepass
     else:
         enablePassword = password
+    # Check to see if the routers were specified with a file or directly 
+    # through the cli.  Then create the router list.
     if args.routerFile:
         routerFileObj = open(args.routerFile)
         routerList = routerFileObj.read().splitlines()
@@ -98,10 +100,17 @@ def main():
             client.load_system_host_keys()
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-            # Connect to the host.
-            client.connect(hostname=routerList[routerId], 
-                           username=args.username, password=password)
-
+            try:
+                # Connect to the host.
+                client.connect(hostname=routerList[routerId], 
+                               username=args.username, password=password)
+            except:
+                # Connecting to this router has failed we need to advance to 
+                # the next router and restart the loop.
+                print ("Failed to connect to " + routerList[routerId] + ", "
+                       + "skipping.\n")
+                routerId += 1
+                continue
             # Create a client interaction class which will interact with 
             # the host.
             interact = SSHClientInteraction(client, timeout=args.timeout, 
@@ -118,7 +127,7 @@ def main():
                         # We need to send a command
                         interact.send(commandsToRun[commandId])
                     # Advance the command counter
-                    commandId +=1
+                    commandId += 1
                 elif interact.last_match == args.pagerprompt:
                     # We received a pager prompt and need to handle it
                     interact.send(" ")
@@ -131,7 +140,7 @@ def main():
             interact.send('exit')
             interact.expect()
             # Advance to next router
-            routerId +=1
+            routerId += 1
 
     except Exception:
        traceback.print_exc()
