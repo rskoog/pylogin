@@ -24,14 +24,16 @@ def main():
     parser.add_argument("-p", dest="password", type=str, help="Password to be "
                         "used for the device. The script will prompt if not "
                         "given one.")
-    parser.add_argument("-prompt", dest="prompt", type=str, default=".*(>|#)", 
+    parser.add_argument("-prompt", dest="prompt", type=str, 
+                        default=".*(>|#|%) ?", 
                         help="Prompt that pylogin should expect for a new "
                         "line, defaults to Cisco IOS like.")
     parser.add_argument("-pagerprompt", dest="pagerprompt", type=str, 
-                        default=".*--More-- ", help="Prompt given by pager if "
+                        default=".*((--More-- )|(---\(more ?\d?\d?%?\)---))", 
+			help="Prompt given by pager if "
                         "enabled, defaults to Cisco IOS like.")
     parser.add_argument("-enablepassprompt", dest="enablepassprompt", type=str,
-                        default="password: ", help="Password prompt given by "
+                        default=".*password: ", help="Password prompt given by "
                         " the device when the enable command is sent. The "
                         "default is cisco ios compatible.") 
     parser.add_argument("-enablepass", dest="enablepass", type=str,
